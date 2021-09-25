@@ -20,6 +20,6 @@ jobs:
         with:
           node-version: '14.x'
 
-      - run: npm install --frozen-lockfile
+      - run: npm install
 
       - run: cdk deploy --require-approval never '*'
