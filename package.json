@@ -1,8 +1,7 @@
 {
-  "name": "aws_cdk_energy_production_io_t",
-  "version": "0.1.0",
+  "name": "energy_production",
   "bin": {
-    "aws_cdk_energy_production_io_t": "bin/aws_cdk_energy_production_io_t.js"
+    "aws_cdk_energy_production_iot": "bin/aws_cdk_energy_production_iot.js"
   },
   "scripts": {
     "build": "tsc",
@@ -11,19 +10,24 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "aws-cdk": "1.100.0",
     "@aws-cdk/assert": "1.100.0",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
+    "aws-cdk": "1.100.0",
     "jest": "^26.4.2",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
     "typescript": "~3.9.7"
   },
   "dependencies": {
+    "@aws-cdk/aws-lambda-nodejs": "^1.124.0",
+    "@aws-cdk/aws-s3": "^1.124.0",
     "@aws-cdk/aws-sns": "1.100.0",
     "@aws-cdk/aws-sns-subscriptions": "1.100.0",
     "@aws-cdk/aws-sqs": "1.100.0",
     "@aws-cdk/core": "1.100.0"
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/TrygviZL/aws_cdk_energy_production_iot.git",
+  "author": "Trygvi <trygvi.laksafoss@gmail.com>"
 }

@@ -1,6 +1,6 @@
 import { expect as expectCDK, haveResource } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
-import * as AwsCdkEnergyProductionIoT from '../lib/aws_cdk_energy_production_io_t-stack';
+import * as AwsCdkEnergyProductionIoT from '../lib/aws_cdk_energy_production_iot-stack';
 
 test('SQS Queue Created', () => {
     const app = new cdk.App();

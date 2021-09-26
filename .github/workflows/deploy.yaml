@@ -4,8 +4,8 @@ on:
       - main
 
 jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +20,6 @@ jobs:
         with:
           node-version: '14.x'
 
-      - run: npm install
+      - run: yarn install --frozen-lockfile
 
-      - run: cdk deploy --require-approval never '*'
+      - run: yarn run cdk deploy --require-approval never '*'
