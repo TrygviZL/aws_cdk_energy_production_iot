@@ -10,15 +10,18 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
     super(scope, id, props);
 
     const sevRawBucket = new Bucket(this, 'sevRawBucket')
-   
-    const fetchProcessSevData = new lambdanodejs.NodejsFunction(this, 'sevDataLambda',{
-      runtime: lambda.Runtime.NODEJS_14_X,
-    })
 
     const s3destination = new destinations.S3Bucket(sevRawBucket) 
 
     const sevDeliveryStream = new kinesis.DeliveryStream(this, 'sevRawBucket', {
       destinations: [s3destination],
+    })
+
+    const fetchProcessSevData = new lambdanodejs.NodejsFunction(this, 'sevDataLambda',{
+      runtime: lambda.Runtime.NODEJS_14_X,
+      environment: {
+        DELIVERYSTREAM_NAME: sevDeliveryStream.deliveryStreamName
+      }
     })
   }
 }
