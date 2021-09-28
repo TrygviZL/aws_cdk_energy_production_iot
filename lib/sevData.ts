@@ -1,8 +1,9 @@
 import * as aws from 'aws-sdk'
+import * as firehose from '@aws-cdk/aws-kinesisfirehose'
 import * as https from 'https'
 const deliveryStream = new aws.Firehose()
 
-interface sevDataFormat {
+interface sevDataParsed {
   Datestamp: string
   Timestamp: string
   Oil_Sum: number
@@ -17,35 +18,37 @@ interface sevDataFormat {
   Sun_Sumba: number
 }
 
-interface paramsFormat {
-  StreamName: string
-  Record: {
-    Data: string
-  }
+interface httpoptions {
+  hostname: string
+  path: string
+  method: string
 }
 
 export const handler = async(event:any) => {
   console.log("request:", JSON.stringify(event, undefined, 2));
-
-  var params = getAndParseSevData(deliveryStreamName)
-
-  console.log('PARAMS: %j', params)
-
-  return deliveryStream.putRecord(params)
-}
-
-const getAndParseSevData = async(deliveryStreamName) => {
+ 
   const options = {
     hostname: 'www.sev.fo',
     path: '/api/realtimemap/now',
     method: 'GET',
   }
-  var sevDataRaw = await getSevData(options)
-  var sevDataParsed = await parseSevData(sevDataRaw, deliveryStreamName)
-  return sevDataParsed
+
+  var response = await getSevData(options)
+
+  var params = await parseSevData(response, process.env.DELIVERYSTREAM_NAME!)
+
+  console.log('PARAMS: %j', params)
+
+  return deliveryStream.putRecord(params).promise()
+    .then(() => {
+      console.log('Record written to stream')
+    })
+    .catch((err) => {
+      console.log(err)
+   })
 }
 
-const getSevData = async(options:any) => {
+export const getSevData = async(options:httpoptions) => {
   return new Promise((resolve) => {
     https.request(options, res => {
       let data:any = []
@@ -60,7 +63,7 @@ const getSevData = async(options:any) => {
   })
 }
 
-const parseSevData = async(data:any,deliveryStreamName: String) => {
+export const parseSevData = async(data:any, deliveryStreamName: string): Promise<aws.Firehose.PutRecordInput> => {
   var dataJSONed = JSON.parse(data)
   
   var sevData = {
@@ -78,8 +81,8 @@ const parseSevData = async(data:any,deliveryStreamName: String) => {
     Sun_Sumba: dataJSONed.SuSol_E.replace(/,/g, '.')      
   }
 
-  const params = {
-    StreamName: deliveryStreamName,
+  var params = {
+    DeliveryStreamName: deliveryStreamName,
     Record: {
       Data: sevData.toString(), 
     }
