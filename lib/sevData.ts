@@ -68,7 +68,7 @@ export const parseSevData = async(data:any, deliveryStreamName: string): Promise
   var params = {
     DeliveryStreamName: deliveryStreamName,
     Record: {
-      Data: sevData.toString(), 
+      Data: JSON.stringify(sevData), 
     }
   }
 
