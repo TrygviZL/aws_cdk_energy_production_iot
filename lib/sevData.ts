@@ -18,9 +18,9 @@ export const handler = async(event:any) => {
   }
 
   var response = await getSevData(options)
+  console.log('API RESPONSE: %j', response)
 
   var params = await parseSevData(response, process.env.DELIVERYSTREAM_NAME!)
-
   console.log('PARAMS: %j', params)
 
   return deliveryStream.putRecord(params).promise()
