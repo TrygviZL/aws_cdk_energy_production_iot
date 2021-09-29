@@ -15,9 +15,10 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
     const sevRawBucket = new Bucket(this, 'sevBucket')
 
     const s3destination = new destinations.S3Bucket(sevRawBucket, {
-      dataOutputPrefix: 'sevdata/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}',
+      dataOutputPrefix: 'sevdata/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
       errorOutputPrefix: 'sevdataError/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}/',
-      bufferingInterval: cdk.Duration.minutes(5)
+      bufferingInterval: cdk.Duration.minutes(5),
+      compression: destinations.Compression.SNAPPY,
     }) 
 
     const sevDeliveryStream = new kinesis.DeliveryStream(this, 'sevRawBucket', {
