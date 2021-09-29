@@ -3,6 +3,10 @@
 *.d.ts
 node_modules
 
+*.swp
+*.sop
+*~
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out

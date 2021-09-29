@@ -12,7 +12,7 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const sevRawBucket = new Bucket(this, 'sevRawBucket')
+    const sevRawBucket = new Bucket(this, 'sevBucket')
 
     const s3destination = new destinations.S3Bucket(sevRawBucket) 
 
