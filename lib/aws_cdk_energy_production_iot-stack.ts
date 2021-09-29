@@ -14,7 +14,10 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
 
     const sevRawBucket = new Bucket(this, 'sevBucket')
 
-    const s3destination = new destinations.S3Bucket(sevRawBucket) 
+    const s3destination = new destinations.S3Bucket(sevRawBucket, {
+      dataOutputPrefix: 'sevdata/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}',
+      errorOutputPrefix: 'sevdataError/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}',
+    }) 
 
     const sevDeliveryStream = new kinesis.DeliveryStream(this, 'sevRawBucket', {
       destinations: [s3destination],
