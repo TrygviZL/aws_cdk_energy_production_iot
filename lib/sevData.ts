@@ -1,5 +1,4 @@
 import * as aws from 'aws-sdk'
-import * as firehose from '@aws-cdk/aws-kinesisfirehose'
 import * as https from 'https'
 const deliveryStream = new aws.Firehose()
 

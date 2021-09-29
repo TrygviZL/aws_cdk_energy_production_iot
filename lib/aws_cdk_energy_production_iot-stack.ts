@@ -4,6 +4,9 @@ import * as kinesis from '@aws-cdk/aws-kinesisfirehose';
 import * as destinations from '@aws-cdk/aws-kinesisfirehose-destinations';
 import * as lambdanodejs from '@aws-cdk/aws-lambda-nodejs';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as targets from '@aws-cdk/aws-events-targets'
+import * as events from '@aws-cdk/aws-events'
+
 
 export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
@@ -23,5 +26,14 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
         DELIVERYSTREAM_NAME: sevDeliveryStream.deliveryStreamName
       }
     })
+
+    sevDeliveryStream.grantPutRecords(fetchProcessSevData)
+
+    sevRawBucket.grantPut(sevDeliveryStream)
+ 
+    const eventRule = new events.Rule(this, 'scheduleRule', {
+      schedule: events.Schedule.cron({ minute: '/3'}),
+    });
+    eventRule.addTarget(new targets.LambdaFunction(fetchProcessSevData))
   }
 }
