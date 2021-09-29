@@ -8,12 +8,12 @@ The energy production on the Faroe Islands is handled by the energy company SEV.
 
 ## Application
 
-* A Lambda function which calls the public API and parses the data into a JSON object. After the data is parsed, it is pushed to a Kinesis Firehose Delivery Stream.
-* A Kinesis Firehose Delivery Stream which recieves data and buffers it for a up to 15 minutes before it writes the data to s3, compressed with SNAPPY.
+* CI/CD pipeline using GitHub Actions to deploy infrastructure when a branch is merged with main
+* A Lambda function which calls the public API and parses the data into a JSON object. After the data is parsed, it is pushed to a Kinesis Firehose Delivery Stream
+* A Kinesis Firehose Delivery Stream which recieves data and buffers it for a up to 15 minutes before it writes the data to s3, compressed with SNAPPY
 * An s3 bucket which recieves data partitioned into 's3Bucket/Year/Month/day/'
 
 ![AWS architecture](https://github.com/TrygviZL/aws_cdk_energy_production_iot/blob/main/static/FirehoseToS3.png?raw=true)
-Features:
 
 ## To-Do
 * Write unit test around Lambda function
