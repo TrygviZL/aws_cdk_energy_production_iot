@@ -2,21 +2,6 @@ import * as aws from 'aws-sdk'
 import * as https from 'https'
 const deliveryStream = new aws.Firehose()
 
-interface sevDataParsed {
-  Datestamp: string
-  Timestamp: string
-  Oil_Sum: number
-  Water_Sum: number
-  Wind_Sum: number 
-  Biogas_Sum: number 
-  Sun_Sum: number
-  Wind_Neshagi: number
-  Wind_Husahagi: number
-  Wind_Porkeri: number 
-  Wind_Rokt: number
-  Sun_Sumba: number
-}
-
 interface httpoptions {
   hostname: string
   path: string
