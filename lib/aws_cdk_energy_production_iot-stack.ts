@@ -12,33 +12,41 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const sevRawBucket = new Bucket(this, 'sevBucket')
+    const rawBucket = new Bucket(this, 'rawBucket')
 
-    const s3destination = new destinations.S3Bucket(sevRawBucket, {
-      dataOutputPrefix: 'sevdata/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
-      errorOutputPrefix: 'sevdataError/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}/',
-      bufferingInterval: cdk.Duration.minutes(15),
-      compression: destinations.Compression.SNAPPY
-    }) 
+    const sources = [
+      'sev',
+      'vorn',
+    ]
+    
+    sources.map((id: string) => {
 
-    const sevDeliveryStream = new kinesis.DeliveryStream(this, 'sevRawBucket', {
-      destinations: [s3destination],
-    })
+      const s3destination = new destinations.S3Bucket(rawBucket, {
+        dataOutputPrefix: `${id}` + 'data/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
+        errorOutputPrefix: `${id}` + 'dataError/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}/',
+        bufferingInterval: cdk.Duration.minutes(15),
+        /*compression: destinations.Compression.SNAPPY*/   
+      })
+      
+      const DeliveryStream = new kinesis.DeliveryStream(this, 'rawBucket', {
+        destinations: [s3destination],
+      })
 
-    const fetchProcessSevData = new lambdanodejs.NodejsFunction(this, 'sevDataLambda',{
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: {
-        DELIVERYSTREAM_NAME: sevDeliveryStream.deliveryStreamName
-      }
-    })
+      const fetchProcessData = new lambdanodejs.NodejsFunction(this, `${id}` + 'DataLambda',{
+        runtime: lambda.Runtime.NODEJS_14_X,
+        environment: {
+          DELIVERYSTREAM_NAME: DeliveryStream.deliveryStreamName
+        }
+      })
 
-    sevDeliveryStream.grantPutRecords(fetchProcessSevData)
+      DeliveryStream.grantPutRecords(fetchProcessData)
 
-    sevRawBucket.grantPut(sevDeliveryStream)
+      rawBucket.grantPut(DeliveryStream)
  
-    const eventRule = new events.Rule(this, 'scheduleRule', {
-      schedule: events.Schedule.cron({ minute: '/3'}),
-    });
-    eventRule.addTarget(new targets.LambdaFunction(fetchProcessSevData))
+      const eventRule = new events.Rule(this, 'scheduleRule', {
+        schedule: events.Schedule.cron({ minute: '/3'}),
+      });
+      eventRule.addTarget(new targets.LambdaFunction(fetchProcessSevData))
+    })
   }
 }
