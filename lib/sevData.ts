@@ -8,30 +8,6 @@ interface httpoptions {
   method: string
 }
 
-export const handler = async(event:any) => {
-  console.log("request:", JSON.stringify(event, undefined, 2));
- 
-  const options = {
-    hostname: 'www.sev.fo',
-    path: '/api/realtimemap/now',
-    method: 'GET',
-  }
-
-  var response = await getSevData(options)
-  console.log('API RESPONSE: %j', response)
-
-  var params = await parseSevData(response, process.env.DELIVERYSTREAM_NAME!)
-  console.log('PARAMS: %j', params)
-
-  return deliveryStream.putRecord(params).promise()
-    .then(() => {
-      console.log('Record written to stream')
-    })
-    .catch((err) => {
-      console.log(err)
-   })
-}
-
 export const getSevData = async(options:httpoptions) => {
   return new Promise((resolve) => {
     https.request(options, res => {
