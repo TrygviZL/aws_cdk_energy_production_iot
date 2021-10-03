@@ -4,6 +4,7 @@ export interface httpoptions {
   hostname: string
   path: string
   method: string
+  rejectUnauthorized: boolean
 }
 
 export interface vornResponse {

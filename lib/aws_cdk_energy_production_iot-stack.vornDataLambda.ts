@@ -9,6 +9,7 @@ export const handler = async(event:any) => {
     hostname: 'www.vedrid.fo',
     path: '/Home/WeatherStationLatestData/',
     method: 'GET',
+    rejectUnauthorized: false,
   }
 
   const response = await getApiData(options)
