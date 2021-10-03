@@ -1,5 +1,5 @@
 import * as aws from 'aws-sdk'
-import { getApiData, parseSevData } from './data-utils'
+import { getApiData, parseVornData } from './data-utils'
 const deliveryStream = new aws.Firehose()
 
 export const handler = async(event:any) => {
@@ -11,13 +11,13 @@ export const handler = async(event:any) => {
     method: 'GET',
   }
 
-  var response = await getApiData(options)
+  const response = await getApiData(options)
   console.log('RESPONSE: %j', response)
 
-  var params = await parseVornData(response, process.env.DELIVERYSTREAM_NAME!)
+  const params = parseVornData(response, process.env.DELIVERYSTREAM_NAME!)
   console.log('PARAMS: %j', params)
-
-  return deliveryStream.putRecord(params).promise()
+  
+  return deliveryStream.putRecordBatch(params).promise()
     .then(() => {
       console.log('Record written to stream')
     })
