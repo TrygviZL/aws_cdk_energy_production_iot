@@ -2,7 +2,7 @@ import * as aws from 'aws-sdk'
 import * as https from 'https'
 import { httpoptions, vornResponse, sevResponse } from './data-utils.test'
 
-export const getApiData = async(options:httpoptions) => {
+export const getApiData = async(options:httpoptions): Promise<any> => {
   return new Promise((resolve) => {
     https.request(options, res => {
       let data:any = []
