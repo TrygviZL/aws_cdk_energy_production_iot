@@ -24,7 +24,7 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
       const s3destination = new destinations.S3Bucket(rawBucket, {
         dataOutputPrefix: `${id}` + 'data/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/',
         errorOutputPrefix: `${id}` + 'dataError/!{firehose:error-output-type}/year=!{timestamp:yyyy}/month=!{timestamp:mm}/day=!{timestamp:dd}/',
-        bufferingInterval: cdk.Duration.minutes(15),
+        bufferingInterval: cdk.Duration.minutes(5),
         /*compression: destinations.Compression.SNAPPY*/   
       })
       
@@ -46,7 +46,7 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
       const eventRule = new events.Rule(this, 'scheduleRule', {
         schedule: events.Schedule.cron({ minute: '/3'}),
       });
-      eventRule.addTarget(new targets.LambdaFunction(fetchProcessSevData))
+      eventRule.addTarget(new targets.LambdaFunction(fetchProcessData))
     })
   }
 }
