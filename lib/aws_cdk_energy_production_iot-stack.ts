@@ -43,7 +43,7 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
 
       rawBucket.grantPut(DeliveryStream)
  
-      const eventRule = new events.Rule(this, 'scheduleRule', {
+      const eventRule = new events.Rule(this, `${id}` + 'scheduleRule', {
         schedule: events.Schedule.cron({ minute: '/3'}),
       });
       eventRule.addTarget(new targets.LambdaFunction(fetchProcessData))
