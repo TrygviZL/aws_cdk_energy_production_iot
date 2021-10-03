@@ -28,7 +28,7 @@ export class AwsCdkEnergyProductionIoTStack extends cdk.Stack {
         /*compression: destinations.Compression.SNAPPY*/   
       })
       
-      const DeliveryStream = new kinesis.DeliveryStream(this, 'rawBucket', {
+      const DeliveryStream = new kinesis.DeliveryStream(this, 'deliveryStream', {
         destinations: [s3destination],
       })
 
